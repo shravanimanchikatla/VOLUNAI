@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; gap: 2rem; margin-top: 2rem;">
+    <!-- Sidebar -->
+    <div class="glass-panel" style="width: 250px; padding: 1.5rem; height: fit-content;">
+        <h3 style="margin-top: 0;">Organizer Panel</h3>
+        <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 1rem;"><a href="{{ url_for('organizer_dashboard') }}" style="color: var(--text-secondary); text-decoration: none;">Submit New Report</a></li>
+            <li style="margin-bottom: 1rem;"><a href="{{ url_for('organizer_view_tasks') }}" style="color: var(--text-secondary); text-decoration: none;">View All Tasks</a></li>
+            <li style="margin-bottom: 1rem;"><a href="{{ url_for('organizer_roster') }}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">Volunteer Roster</a></li>
+            <li style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);"><a href="{{ url_for('profile') }}" style="color: var(--text-secondary); text-decoration: none;">👤 My Profile</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div style="flex: 1;">
+        <div class="glass-panel" style="padding: 2.5rem;">
+            <h2>Registered Volunteers</h2>
+            
+            <div style="margin-top: 2rem; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <th style="padding: 1rem; color: var(--text-secondary);">Name</th>
+                            <th style="padding: 1rem; color: var(--text-secondary);">Email</th>
+                            <th style="padding: 1rem; color: var(--text-secondary);">Declared Skills</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vol in volunteers %}
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 1rem; font-weight: 500;">{{ vol.name }}</td>
+                            <td style="padding: 1rem; color: var(--text-secondary);">{{ vol.email }}</td>
+                            <td style="padding: 1rem;">
+                                {% if vol.skills %}
+                                    {% for skill in vol.skills.split(',') %}
+                                        <span style="background: rgba(168, 85, 247, 0.2); color: #c084fc; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-right: 0.5rem; display: inline-block; margin-bottom: 0.2rem;">{{ skill.strip() }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span style="color: var(--text-secondary); font-style: italic;">No skills listed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No volunteers registered yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

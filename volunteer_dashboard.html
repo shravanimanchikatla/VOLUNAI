@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="margin-top: 2rem;">
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div style="background: var(--success); color: white; padding: 0.75rem; border-radius: 8px; margin-bottom: 2rem;">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if my_tasks %}
+    <h2 style="margin-bottom: 1rem; color: var(--accent-primary);">My Active Tasks</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        {% for task in my_tasks %}
+        <div class="glass-panel" style="padding: 1.5rem; border-left: 4px solid var(--accent-primary);">
+            <h3 style="margin-top: 0; margin-bottom: 0.5rem;">{{ task.title }}</h3>
+            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">📍 {{ task.location }}</div>
+            <p style="font-size: 0.95rem; margin-bottom: 1.5rem;">{{ task.description }}</p>
+            {% if task.status == 'completed' %}
+            <div style="background: rgba(16, 185, 129, 0.1); padding: 0.75rem; border-radius: 8px; text-align: center; font-weight: bold; color: var(--success);">
+                Status: Completed
+            </div>
+            {% else %}
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <div style="flex: 1; background: rgba(59, 130, 246, 0.1); padding: 0.75rem; border-radius: 8px; text-align: center; font-weight: bold; color: var(--accent-primary);">
+                    Active Task
+                </div>
+                <form method="POST" action="{{ url_for('complete_task', task_id=task.id) }}" style="flex: 1;">
+                    <button type="submit" class="btn-primary" style="width: 100%; background: var(--success);">Mark Completed</button>
+                </form>
+            </div>
+            <form method="POST" action="{{ url_for('release_task', task_id=task.id) }}" style="margin-top: 1rem;">
+                <button type="submit" style="width: 100%; background: none; border: 1px solid rgba(255,255,255,0.2); color: var(--text-secondary); padding: 0.5rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem;">I can't do this anymore (Release Task)</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h2 style="margin-bottom: 1rem;">Urgent Tasks Matched For You</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 2rem;">Based on your listed skills and urgency.</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        {% for task in matched_tasks %}
+        <div class="glass-panel" style="padding: 1.5rem; position: relative; border-left: 4px solid {% if task.urgency_score > 7 %}var(--danger){% elif task.urgency_score > 4 %}var(--warning){% else %}var(--success){% endif %};">
+            <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">
+                Urgency: {{ task.urgency_score }}/10
+            </div>
+            <h3 style="margin-top: 0; margin-bottom: 0.5rem; padding-right: 4rem;">{{ task.title }}</h3>
+            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">📍 {{ task.location }}</div>
+            <p style="font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.4;">{{ task.description }}</p>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <span style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem;">Skills Needed:</span>
+                <span style="background: rgba(59, 130, 246, 0.2); color: var(--accent-primary); padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">{{ task.required_skills }}</span>
+            </div>
+            
+            <form method="POST" action="{{ url_for('accept_task', task_id=task.id) }}">
+                <button type="submit" class="btn-primary" style="width: 100%; text-align: center;">Accept Task</button>
+            </form>
+        </div>
+        {% else %}
+            <p style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">No active tasks.</p>
+        {% endfor %}
+    </div>
+
+    {% if other_tasks %}
+    <h2 style="margin-bottom: 1rem;">Other Open Tasks</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+        {% for task in other_tasks %}
+        <div class="glass-panel" style="padding: 1.5rem; position: relative; opacity: 0.8; border-left: 4px solid #475569;">
+            <h3 style="margin-top: 0; margin-bottom: 0.5rem; padding-right: 4rem;">{{ task.title }}</h3>
+            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">📍 {{ task.location }}</div>
+            <div style="margin-bottom: 1.5rem;">
+                <span style="background: rgba(255, 255, 255, 0.1); color: var(--text-secondary); padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">{{ task.required_skills }}</span>
+            </div>
+            <form method="POST" action="{{ url_for('accept_task', task_id=task.id) }}">
+                <button type="submit" class="btn-primary" style="width: 100%; text-align: center; background: #475569;">Accept Anyway</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
