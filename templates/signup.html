@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 500px; margin: 2rem auto; padding: 2.5rem;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Create an Account</h2>
+    
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div style="background: var(--danger); color: white; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('signup') }}">
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Full Name</label>
+            <input type="text" name="name" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Email Address (Must be @gmail.com)</label>
+            <input type="email" name="email" required pattern=".*@gmail\.com$" title="Please use a valid @gmail.com address" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Password</label>
+            <input type="password" name="password" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">I am a...</label>
+            <select name="role" id="role-select" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; box-sizing: border-box;">
+                <option value="volunteer" style="color: black;">Volunteer</option>
+                <option value="organizer" style="color: black;">NGO / Organizer</option>
+            </select>
+        </div>
+        <div id="skills-container" style="margin-bottom: 1.5rem; transition: opacity 0.3s ease, height 0.3s ease; opacity: 1; height: 85px; overflow: hidden;">
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Skills (Optional, comma separated)</label>
+            <input type="text" name="skills" placeholder="e.g. Medical, Carpentry, Driving" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; box-sizing: border-box;">
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; font-size: 1.1rem;">Sign Up</button>
+    </form>
+    
+    <script>
+        const roleSelect = document.getElementById('role-select');
+        const skillsContainer = document.getElementById('skills-container');
+        
+        roleSelect.addEventListener('change', function() {
+            if (this.value === 'organizer') {
+                skillsContainer.style.opacity = '0';
+                setTimeout(() => {
+                    skillsContainer.style.height = '0px';
+                    skillsContainer.style.marginBottom = '0px';
+                }, 300);
+            } else {
+                skillsContainer.style.height = '85px';
+                skillsContainer.style.marginBottom = '1.5rem';
+                setTimeout(() => {
+                    skillsContainer.style.opacity = '1';
+                }, 50);
+            }
+        });
+    </script>
+    
+    <p style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary);">
+        Already have an account? <a href="{{ url_for('login') }}" style="color: var(--accent-primary);">Login</a>
+    </p>
+</div>
+{% endblock %}

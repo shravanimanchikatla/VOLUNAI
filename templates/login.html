@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 400px; margin: 4rem auto; padding: 2.5rem;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Welcome Back</h2>
+    
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div style="background: var(--danger); color: white; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('login') }}">
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Email Address</label>
+            <input type="email" name="email" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label style="color: var(--text-secondary);">Password</label>
+                <a href="{{ url_for('forgot_password') }}" style="color: var(--accent-primary); font-size: 0.85rem; text-decoration: none;">Forgot Password?</a>
+            </div>
+            <input type="password" name="password" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white; box-sizing: border-box;">
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; font-size: 1.1rem;">Login</button>
+    </form>
+    <p style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary);">
+        Don't have an account? <a href="{{ url_for('signup') }}" style="color: var(--accent-primary);">Sign up</a>
+    </p>
+</div>
+{% endblock %}
